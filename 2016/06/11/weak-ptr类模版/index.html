@@ -1,0 +1,926 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="shared_ptr,C++,boost," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="deyituo - Gogogo" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="&amp;#x6700;&amp;#x8FD1;&amp;#x5728;&amp;#x770B;&amp;#x9648;&amp;#x7855;&amp;#x7684;&amp;#x300A;Linux&amp;#x591A;&amp;#x7EBF;&amp;#x7A0B;&amp;#x670D;&amp;#x52A1;&amp;#x7AEF;&amp;#x7F16;&amp;#x7A0B;&amp;#xFF1A;&amp;#x4F7F;&amp;#x7528;muduo C++&amp;#x7F51;&amp;#x7EDC;&amp;#x5E93;&amp;#x300B;&amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="weak_ptr类模版">
+<meta property="og:url" content="http://deyituo.github.io/2016/06/11/weak-ptr类模版/index.html">
+<meta property="og:site_name" content="deyituo - Gogogo">
+<meta property="og:description" content="&amp;#x6700;&amp;#x8FD1;&amp;#x5728;&amp;#x770B;&amp;#x9648;&amp;#x7855;&amp;#x7684;&amp;#x300A;Linux&amp;#x591A;&amp;#x7EBF;&amp;#x7A0B;&amp;#x670D;&amp;#x52A1;&amp;#x7AEF;&amp;#x7F16;&amp;#x7A0B;&amp;#xFF1A;&amp;#x4F7F;&amp;#x7528;muduo C++&amp;#x7F51;&amp;#x7EDC;&amp;#x5E93;&amp;#x300B;&amp;">
+<meta property="og:updated_time" content="2016-06-12T01:18:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="weak_ptr类模版">
+<meta name="twitter:description" content="&amp;#x6700;&amp;#x8FD1;&amp;#x5728;&amp;#x770B;&amp;#x9648;&amp;#x7855;&amp;#x7684;&amp;#x300A;Linux&amp;#x591A;&amp;#x7EBF;&amp;#x7A0B;&amp;#x670D;&amp;#x52A1;&amp;#x7AEF;&amp;#x7F16;&amp;#x7A0B;&amp;#xFF1A;&amp;#x4F7F;&amp;#x7528;muduo C++&amp;#x7F51;&amp;#x7EDC;&amp;#x5E93;&amp;#x300B;&amp;">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://deyituo.github.io/2016/06/11/weak-ptr类模版/"/>
+
+  <title> weak_ptr类模版 | deyituo - Gogogo </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?263dd2df302e872e507f7c2bf879e5dd";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">deyituo - Gogogo</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                weak_ptr类模版
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-06-11T17:33:55+08:00" content="2016-06-11">
+              2016-06-11
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Unix-Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Unix/Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/06/11/weak-ptr类模版/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/06/11/weak-ptr类模版/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv">阅读次数
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>&#x6700;&#x8FD1;&#x5728;&#x770B;&#x9648;&#x7855;&#x7684;&#x300A;Linux&#x591A;&#x7EBF;&#x7A0B;&#x670D;&#x52A1;&#x7AEF;&#x7F16;&#x7A0B;&#xFF1A;&#x4F7F;&#x7528;muduo C++&#x7F51;&#x7EDC;&#x5E93;&#x300B;&#xFF0C;&#x7B2C;&#x4E00;&#x7AE0;&#x4E2D;&#x91CD;&#x70B9;&#x8BB2;&#x4E86;&#x591A;&#x7EBF;&#x7A0B;&#x4E0B;&#x6307;&#x9488;&#x7684;&#x5904;&#x7406;&#x95EE;&#x9898;&#xFF0C;&#x5176;&#x4E2D;&#x91CD;&#x70B9;&#x662F; shared_ptr &#x4E0E; weak_ptr, &#x4E0A;&#x4E00;&#x7BC7;&#x535A;&#x5BA2;&#x5B66;&#x4E60;&#x4E86; shared_ptr &#x7684;&#x57FA;&#x672C;&#x7528;&#x6CD5; ( <a href="/2016/06/09/shared-ptr&#x7C7B;&#x6A21;&#x7248;/">shared_ptr&#x7C7B;&#x6A21;&#x7248;</a> )&#xFF0C;&#x4ECA;&#x5929;&#x7EE7;&#x7EED;&#x5B66;&#x4E60; weak_ptr &#xFF0C;&#x4EE5;&#x4E0B;&#x662F;&#x5BF9; <a href="http://www.boost.org/doc/libs/1_61_0/libs/smart_ptr/weak_ptr.htm" target="_blank" rel="external">boost::weak_ptr</a>  &#x7684;&#x4E2D;&#x6587;&#x7FFB;&#x8BD1;&#x3002;</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><h3 id="weak-ptr-&#x8F6C;&#x5316;&#x5230;-shared-ptr"><a href="#weak-ptr-&#x8F6C;&#x5316;&#x5230;-shared-ptr" class="headerlink" title="weak_ptr &#x8F6C;&#x5316;&#x5230; shared_ptr"></a>weak_ptr &#x8F6C;&#x5316;&#x5230; shared_ptr</h3><p>weak_ptr &#x7C7B;&#x6A21;&#x7248;&#x5B58;&#x50A8;&#x4E86;&#x88AB; shared_ptr &#x7BA1;&#x7406;&#x7684;&#x5BF9;&#x8C61;&#x7684;&#x201C;&#x5F31;&#x5F15;&#x7528;&#x201D;&#xFF0C;weak_ptr &#x80FD;&#x901A;&#x8FC7;&#x4F7F;&#x7528; <a href="http://www.boost.org/doc/libs/1_61_0/libs/smart_ptr/shared_ptr.htm#constructors" target="_blank" rel="external">shared_ptr &#x7684;&#x6784;&#x9020;&#x51FD;&#x6570;</a> &#x6216;&#x8005;&#x6210;&#x5458;&#x51FD;&#x6570; &#x8F6C;&#x5316;&#x5230; shared_ptr&#x3002;&#x5F53;&#x6700;&#x540E;&#x4E00;&#x4E2A;&#x6307;&#x5411;&#x5BF9;&#x8C61;&#x7684; shared_ptr &#x88AB;&#x9500;&#x6BC1;&#xFF0C;&#x5BF9;&#x8C61;&#x4F1A;&#x88AB;&#x9500;&#x6BC1;&#x3002;weak_ptr &#x7684;&#x5BF9;&#x8C61;&#x88AB;&#x9500;&#x6BC1;&#x540E;&#xFF0C;&#x8BD5;&#x56FE;&#x4ECE; weak_ptr &#x83B7;&#x5F97; shared_ptr &#x5C06;&#x5931;&#x8D25;&#xFF0C;&#x5E76;&#x4E14;&#x6784;&#x9020;&#x51FD;&#x6570;&#x4F1A;&#x629B;&#x51FA;&#x4E00;&#x4E2A;&#x7C7B;&#x578B;&#x4E3A; boost::bad_weak_ptr &#x7684;&#x5F02;&#x5E38;&#xFF0C;weak_ptr::lock &#x5C06;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x7A7A;&#x7684; shared_ptr&#x3002;&#xFF08;&#xFF1F;&#xFF09;</p>
+<h3 id="&#x6807;&#x51C6;&#x5E93;"><a href="#&#x6807;&#x51C6;&#x5E93;" class="headerlink" title="&#x6807;&#x51C6;&#x5E93;"></a>&#x6807;&#x51C6;&#x5E93;</h3><p>&#x6BCF;&#x4E00;&#x4E2A; weak_ptr &#x90FD;&#x80FD;&#x62F7;&#x8D1D;&#x6784;&#x9020;&#x548C;&#x8D4B;&#x503C;&#xFF0C;&#x56E0;&#x800C;&#x80FD;&#x7528;&#x4E8E;&#x6807;&#x51C6;&#x5E93;&#x5BB9;&#x5668;&#x3002;&#x53E6;&#x5916;&#xFF0C;&#x8FD8;&#x6709;&#x5BF9;&#x6BD4;&#x64CD;&#x4F5C;&#x7B26;&#xFF0C;&#x4F7F;&#x5F97; weak_ptr &#x80FD;&#x7528;&#x4E8E;&#x6807;&#x51C6;&#x5E93;&#x7684;&#x5173;&#x8054;&#x5BB9;&#x5668;&#x3002;</p>
+<h3 id="&#x64CD;&#x4F5C;"><a href="#&#x64CD;&#x4F5C;" class="headerlink" title="&#x64CD;&#x4F5C;"></a>&#x64CD;&#x4F5C;</h3><p>weak_ptr &#x64CD;&#x4F5C;&#x7B26;&#x4E0D;&#x629B;&#x51FA;&#x5F02;&#x5E38;&#x3002;</p>
+<p>&#x7C7B;&#x6A21;&#x7248;&#x4F7F;&#x7528; T &#x4F5C;&#x4E3A;&#x53C2;&#x6570;&#xFF0C;T &#x4E3A;&#x6307;&#x5411;&#x7684;&#x5BF9;&#x8C61;&#x7C7B;&#x578B;&#x3002;</p>
+<p>&#x4E0E; shared_ptr &#x5BF9;&#x6BD4;&#xFF0C;weak_ptr &#x63D0;&#x4F9B;&#x4E86;&#x975E;&#x5E38;&#x6709;&#x9650;&#x7684;&#x90E8;&#x5206;&#x64CD;&#x4F5C;&#xFF0C;&#x56E0;&#x4E3A;&#x5728;&#x591A;&#x7EBF;&#x7A0B;&#x7A0B;&#x5E8F;&#x91CC;&#x4F7F;&#x7528;&#x5B83;&#x5B58;&#x50A8;&#x7684;&#x6307;&#x9488;&#x5F0F;&#x901A;&#x5E38;&#x662F;&#x5371;&#x9669;&#x7684;&#xFF0C;&#x751A;&#x81F3;&#x5728;&#x5355;&#x7EBF;&#x7A0B;&#x4E2D;&#x6709;&#x65F6;&#x4E5F;&#x4E0D;&#x5B89;&#x5168;&#xFF08;&#x4E5F;&#x5C31;&#x662F;&#x8BF4;&#xFF0C;&#x5B83;&#x4F1A;&#x5F15;&#x8D77;&#x65E0;&#x5B9A;&#x4E49;&#x7684;&#x884C;&#x4E3A;&#xFF09;&#x3002;&#x5047;&#x8BBE; weak_ptr &#x62E5;&#x6709;&#x4E00;&#x4E2A; get &#x51FD;&#x6570;&#x80FD;&#x591F;&#x8FD4;&#x56DE;&#x5BF9;&#x8C61;&#x6307;&#x9488;&#xFF0C;&#x5982;&#x4E0B;&#x9762;&#x9519;&#x8BEF;&#x7684;&#x4EE3;&#x7801;&#xFF1A;<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">shared_ptr</span>&lt;<span class="keyword">int</span>&gt; p(<span class="keyword">new</span> <span class="keyword">int</span>(<span class="number">5</span>));</span><br><span class="line">weak_ptr&lt;<span class="keyword">int</span>&gt; q(p);</span><br><span class="line"></span><br><span class="line"><span class="comment">// some time later</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">int</span> * r = q.get())</span><br><span class="line">{</span><br><span class="line">    <span class="comment">// use *r</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure></p>
+<p>&#x60F3;&#x8C61;&#x5982;&#x679C;&#x5728; if &#x540E;&#xFF0C;&#x5728; r &#x88AB;&#x4F7F;&#x7528;&#x524D;&#xFF0C;&#x53E6;&#x5916;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x8FD0;&#x884C;&#x5230;&#x4E86;&#x8BED;&#x53E5; p.reset()&#xFF0C;&#x90A3;&#x4E48; r &#x73B0;&#x5728;&#x5C31;&#x6210;&#x4E86;&#x7A7A;&#x60AC;&#x6307;&#x9488;&#x3002;</p>
+<blockquote>
+<p>&#x7A7A;&#x60AC;&#x6307;&#x9488;(dangling pointer)&#x6307;&#x5411;&#x5DF2;&#x7ECF;&#x9500;&#x6BC1;&#x7684;&#x5BF9;&#x8C61;&#x6216;&#x5DF2;&#x7ECF;&#x56DE;&#x6536;&#x7684;&#x5730;&#x5740;,&#x91CE;&#x6307;&#x9488;(wild pointer)&#x6307;&#x7684;&#x662F; &#x672A;&#x7ECF;&#x521D;&#x59CB;&#x5316;&#x7684;&#x6307;&#x9488;(<a href="http://en.wikipedia.org/wiki/Dangling_pointer)&#x3002;" target="_blank" rel="external">http://en.wikipedia.org/wiki/Dangling_pointer)&#x3002;</a></p>
+</blockquote>
+<p>&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#x7684;&#x89E3;&#x51B3;&#x529E;&#x6CD5;&#x662F;&#x4ECE; q &#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x4E34;&#x65F6;&#x7684; shared_ptr &#xFF1A;<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">shared_ptr</span>&lt;<span class="keyword">int</span>&gt; p(<span class="keyword">new</span> <span class="keyword">int</span>(<span class="number">5</span>));</span><br><span class="line">weak_ptr&lt;<span class="keyword">int</span>&gt; q(p);</span><br><span class="line"></span><br><span class="line"><span class="comment">// some time later</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="built_in">shared_ptr</span>&lt;<span class="keyword">int</span>&gt; r = q.lock())</span><br><span class="line">{</span><br><span class="line">    <span class="comment">// use *r</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure></p>
+<p>&#x90A3;&#x4E48;&#x73B0;&#x5728; r &#x5C31;&#x6709;&#x4E86;&#x4E00;&#x4E2A; q &#x6307;&#x5411;&#x5BF9;&#x8C61;&#x7684;&#x5F15;&#x7528;&#x3002;&#x5373;&#x4F7F; p.reset()&#x5728;&#x53E6;&#x5916;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x88AB;&#x6267;&#x884C;&#xFF0C;&#x8FD9;&#x4E2A;&#x5BF9;&#x8C61;&#x4ECD;&#x7136;&#x4F1A;&#x5B58;&#x6D3B;&#xFF0C;&#x76F4;&#x5230; r &#x79BB;&#x5F00;&#x4E86;&#x4F5C;&#x7528;&#x8303;&#x56F4;&#x6216;&#x8005;&#x91CD;&#x65B0;&#x88AB; reset &#x4E86;&#xFF0C;&#x901A;&#x8FC7;&#x83B7;&#x5F97;&#x5BF9;&#x8C61;&#x7684; shared_ptr&#xFF0C;&#x6211;&#x4EEC;&#x80FD;&#x591F;&#x6709;&#x6548;&#x5730;&#x9501;&#x5B9A;&#x5B83;&#x9632;&#x6B62;&#x9500;&#x6BC1;&#x3002; </p>
+<h2 id="Synopsis"><a href="#Synopsis" class="headerlink" title="Synopsis"></a>Synopsis</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> boost {</span><br><span class="line"></span><br><span class="line">  <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <span class="keyword">class</span> weak_ptr {</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">      <span class="keyword">typedef</span> T element_type;</span><br><span class="line"></span><br><span class="line">      weak_ptr();</span><br><span class="line"></span><br><span class="line">      <span class="keyword">template</span>&lt;<span class="keyword">class</span> Y&gt; weak_ptr(<span class="built_in">shared_ptr</span>&lt;Y&gt; <span class="keyword">const</span> &amp; r);</span><br><span class="line">      weak_ptr(weak_ptr <span class="keyword">const</span> &amp; r);</span><br><span class="line">      <span class="keyword">template</span>&lt;<span class="keyword">class</span> Y&gt; weak_ptr(weak_ptr&lt;Y&gt; <span class="keyword">const</span> &amp; r);</span><br><span class="line"></span><br><span class="line">      ~weak_ptr();</span><br><span class="line"></span><br><span class="line">      weak_ptr &amp; <span class="keyword">operator</span>=(weak_ptr <span class="keyword">const</span> &amp; r);</span><br><span class="line">      <span class="keyword">template</span>&lt;<span class="keyword">class</span> Y&gt; weak_ptr &amp; <span class="keyword">operator</span>=(weak_ptr&lt;Y&gt; <span class="keyword">const</span> &amp; r);</span><br><span class="line">      <span class="keyword">template</span>&lt;<span class="keyword">class</span> Y&gt; weak_ptr &amp; <span class="keyword">operator</span>=(<span class="built_in">shared_ptr</span>&lt;Y&gt; <span class="keyword">const</span> &amp; r);</span><br><span class="line"></span><br><span class="line">      <span class="function"><span class="keyword">long</span> <span class="title">use_count</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">      <span class="function"><span class="keyword">bool</span> <span class="title">expired</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">      <span class="built_in">shared_ptr</span>&lt;T&gt; lock() <span class="keyword">const</span>;</span><br><span class="line"></span><br><span class="line">      <span class="function"><span class="keyword">void</span> <span class="title">reset</span><span class="params">()</span></span>;</span><br><span class="line">      <span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(weak_ptr&lt;T&gt; &amp; b)</span></span>;</span><br><span class="line">  };</span><br><span class="line"></span><br><span class="line">  <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, <span class="keyword">class</span> U&gt;</span><br><span class="line">    <span class="keyword">bool</span> <span class="keyword">operator</span>&lt;(weak_ptr&lt;T&gt; <span class="keyword">const</span> &amp; a, weak_ptr&lt;U&gt; <span class="keyword">const</span> &amp; b);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(weak_ptr&lt;T&gt; &amp; a, weak_ptr&lt;T&gt; &amp; b)</span></span>;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h2 id="Members"><a href="#Members" class="headerlink" title="Members"></a>Members</h2><h3 id="element-type"><a href="#element-type" class="headerlink" title="element_type"></a>element_type</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> T element_type;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&#x63D0;&#x4F9B;&#x6A21;&#x7248;&#x53C2;&#x6570; T &#x7684;&#x7C7B;&#x578B;</p>
+</blockquote>
+<h3 id="&#x6784;&#x9020;&#x51FD;&#x6570;"><a href="#&#x6784;&#x9020;&#x51FD;&#x6570;" class="headerlink" title="&#x6784;&#x9020;&#x51FD;&#x6570;"></a>&#x6784;&#x9020;&#x51FD;&#x6570;</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">weak_ptr();</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&#x6548;&#x679C;&#xFF1A;&#x6784;&#x5EFA;&#x4E00;&#x4E2A;&#x7A7A;&#x7684; weak_ptr &#x3002;<br>&#x540E;&#x7F6E;&#x6761;&#x4EF6;&#xFF1A;use_count() == 0&#x3002;<br>&#x629B;&#x51FA;&#xFF1A;&#x65E0;&#x3002;</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> Y&gt; weak_ptr(<span class="built_in">shared_ptr</span>&lt;Y&gt; <span class="keyword">const</span> &amp; r);</span><br><span class="line">weak_ptr(weak_ptr <span class="keyword">const</span> &amp; r);</span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> Y&gt; weak_ptr(weak_ptr&lt;Y&gt; <span class="keyword">const</span> &amp; r);</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&#x6548;&#x679C;&#xFF1A;&#x5982;&#x679C; r &#x662F;&#x7A7A;&#x7684;&#xFF0C;&#x6784;&#x9020;&#x4E00;&#x4E2A;&#x7A7A;&#x7684; weak_ptr&#xFF1B;&#x5426;&#x5219;&#xFF0C;&#x6784;&#x9020;&#x4E00;&#x4E2A; weak_ptr &#x4E0E; r &#x5171;&#x4EAB;&#x6240;&#x6709;&#x6743;&#xFF0C;&#x540C;&#x65F6;&#x5B58;&#x50A8;&#x4E00;&#x4EFD; r &#x4E2D;&#x7684;&#x6307;&#x9488;&#x7684;&#x62F7;&#x8D1D;&#x3002;<br>&#x540E;&#x7F6E;&#x6761;&#x4EF6;&#xFF1A;use_count() == r.use_count()&#x3002;<br>&#x629B;&#x51FA;&#xFF1A;&#x65E0;&#x3002;</p>
+</blockquote>
+<h3 id="&#x6790;&#x6784;&#x51FD;&#x6570;"><a href="#&#x6790;&#x6784;&#x51FD;&#x6570;" class="headerlink" title="&#x6790;&#x6784;&#x51FD;&#x6570;"></a>&#x6790;&#x6784;&#x51FD;&#x6570;</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~weak_ptr();</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&#x6548;&#x679C;&#xFF1A;&#x9500;&#x6BC1;&#x8FD9;&#x4E2A; weak_ptr&#xFF0C;&#x4F46;&#x662F;&#x5BF9;&#x5B83;&#x4FDD;&#x5B58;&#x7684;&#x6307;&#x9488;&#x6307;&#x5411;&#x7684;&#x5BF9;&#x8C61;&#x65E0;&#x5F71;&#x54CD;&#x3002;<br>&#x629B;&#x51FA;&#xFF1A;&#x65E0;&#x3002;</p>
+</blockquote>
+<h3 id="&#x8D4B;&#x503C;&#x51FD;&#x6570;"><a href="#&#x8D4B;&#x503C;&#x51FD;&#x6570;" class="headerlink" title="&#x8D4B;&#x503C;&#x51FD;&#x6570;"></a>&#x8D4B;&#x503C;&#x51FD;&#x6570;</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">weak_ptr &amp; <span class="keyword">operator</span>=(weak_ptr <span class="keyword">const</span> &amp; r);</span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> Y&gt; weak_ptr &amp; <span class="keyword">operator</span>=(weak_ptr&lt;Y&gt; <span class="keyword">const</span> &amp; r);</span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> Y&gt; weak_ptr &amp; <span class="keyword">operator</span>=(<span class="built_in">shared_ptr</span>&lt;Y&gt; <span class="keyword">const</span> &amp; r);</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&#x6548;&#x679C;&#xFF1A;&#x7B49;&#x540C;&#x4E8E; weak_ptr(r).swap(*this)&#x3002;<br>&#x629B;&#x51FA;&#xFF1A;&#x65E0;&#x3002;</p>
+</blockquote>
+<h3 id="use-count"><a href="#use-count" class="headerlink" title="use_count"></a>use_count</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">use_count</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&#x8FD4;&#x56DE;&#xFF1A;&#x5982;&#x679C;*this&#x4E3A;&#x7A7A;&#xFF0C;0&#xFF1B;&#x5426;&#x5219;&#xFF0C;&#x4E0E; weak_ptr &#x6240;&#x5171;&#x4EAB;&#x6240;&#x6709;&#x6743;&#x7684; shared_ptr &#x7684;&#x6570;&#x76EE;&#x3002;<br>&#x629B;&#x51FA;&#xFF1A;&#x65E0;&#x3002;<br>&#x6CE8;&#x610F;&#xFF1A;use_count() &#x4E0D;&#x662F;&#x9AD8;&#x6548;&#x7684;&#xFF0C;&#x53EA;&#x662F;&#x7528;&#x6765;&#x8C03;&#x8BD5;&#x548C;&#x6D4B;&#x8BD5;&#x3002;</p>
+</blockquote>
+<h3 id="expired"><a href="#expired" class="headerlink" title="expired"></a>expired</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">expired</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&#x8FD4;&#x56DE;&#xFF1A;use_count() == 0&#x3002;<br>&#x629B;&#x51FA;&#xFF1A;&#x65E0;&#x3002;<br>&#x6CE8;&#x610F;&#xFF1A;expired() &#x6BD4; use_count() &#x5FEB;&#x3002;</p>
+</blockquote>
+<h3 id="lock"><a href="#lock" class="headerlink" title="lock"></a>lock</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">shared_ptr</span>&lt;T&gt; lock() <span class="keyword">const</span>;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&#x8FD4;&#x56DE;&#xFF1A;expired() ? shared_ptr&lt; T &gt;() : shared_ptr&lt; T &gt;(*this)&#x3002;</p>
+</blockquote>
+<h3 id="reset"><a href="#reset" class="headerlink" title="reset"></a>reset</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">reset</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&#x6548;&#x679C;&#xFF1A;&#x7B49;&#x4EF7;&#x4E8E; weak_ptr().swap(*this)&#x3002;</p>
+</blockquote>
+<h3 id="swap"><a href="#swap" class="headerlink" title="swap"></a>swap</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(weak_ptr &amp; b)</span></span>;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&#x6548;&#x679C;&#xFF1A;&#x4EA4;&#x6362;&#x4E24;&#x4E2A;&#x667A;&#x80FD;&#x6307;&#x9488;&#x7684;&#x5185;&#x5BB9;&#x3002;<br>&#x629B;&#x51FA;&#xFF1A;&#x65E0;&#x3002;</p>
+</blockquote>
+<h2 id="Free-Functions"><a href="#Free-Functions" class="headerlink" title="Free Functions"></a>Free Functions</h2>
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/shared-ptr/" rel="tag">#shared_ptr</a>
+          
+            <a href="/tags/C/" rel="tag">#C++</a>
+          
+            <a href="/tags/boost/" rel="tag">#boost</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/06/09/shared-ptr类模版/" rel="next" title="shared_ptr类模版">
+                <i class="fa fa-chevron-left"></i> shared_ptr类模版
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2016/06/11/weak-ptr类模版/"
+     data-title="weak_ptr类模版"
+     data-content=""
+     data-url="http://deyituo.github.io/2016/06/11/weak-ptr类模版/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/06/11/weak-ptr类模版/"
+           data-title="weak_ptr类模版" data-url="http://deyituo.github.io/2016/06/11/weak-ptr类模版/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Deyi Tuo" />
+          <p class="site-author-name" itemprop="name">Deyi Tuo</p>
+          <p class="site-description motion-element" itemprop="description">Focus on AI and IT.</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">3</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/deyituo" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.cppblog.com" title="陈硕的Blog" target="_blank">陈硕的Blog</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#weak-ptr-转化到-shared-ptr"><span class="nav-number">1.1.</span> <span class="nav-text">weak_ptr 转化到 shared_ptr</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#标准库"><span class="nav-number">1.2.</span> <span class="nav-text">标准库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#操作"><span class="nav-number">1.3.</span> <span class="nav-text">操作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Synopsis"><span class="nav-number">2.</span> <span class="nav-text">Synopsis</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Members"><span class="nav-number">3.</span> <span class="nav-text">Members</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#element-type"><span class="nav-number">3.1.</span> <span class="nav-text">element_type</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构造函数"><span class="nav-number">3.2.</span> <span class="nav-text">构造函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#析构函数"><span class="nav-number">3.3.</span> <span class="nav-text">析构函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#赋值函数"><span class="nav-number">3.4.</span> <span class="nav-text">赋值函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#use-count"><span class="nav-number">3.5.</span> <span class="nav-text">use_count</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#expired"><span class="nav-number">3.6.</span> <span class="nav-text">expired</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lock"><span class="nav-number">3.7.</span> <span class="nav-text">lock</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#reset"><span class="nav-number">3.8.</span> <span class="nav-text">reset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#swap"><span class="nav-number">3.9.</span> <span class="nav-text">swap</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Free-Functions"><span class="nav-number">4.</span> <span class="nav-text">Free Functions</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Deyi Tuo</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+    <span class="site-pv">本站总访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span>次</span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"deyituo"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';                
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+                            
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').mousedown(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+<script type="text/javascript" async src="//push.zhanzhang.baidu.com/push.js">
+</script>
+
+
+</body>
+</html>
