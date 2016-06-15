@@ -4,6 +4,54 @@
 
     
   <url>
+    <loc>http://deyituo.github.io/2016/06/14/scoped-ptr%E7%B1%BB%E6%A8%A1%E7%89%88/</loc>
+    <lastmod>2016-06-15T04:16:53.000Z</lastmod>
+    <data>
+        <display>
+        <title>scoped_ptr类模版</title>
+        <pubTime>2016-06-14T02:07:06.000Z</pubTime>
+        
+        <tag>shared_ptr</tag>
+         
+        <tag>C++</tag>
+         
+        <tag>boost</tag>
+         
+         
+           
+             
+              <breadCrumb title="Unix/Linux" url="http://deyituo.github.io/categories/Unix-Linux/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://deyituo.github.io/2016/06/12/shared-ptr%E7%B1%BB%E6%A8%A1%E7%89%88-2/</loc>
+    <lastmod>2016-06-14T02:08:22.000Z</lastmod>
+    <data>
+        <display>
+        <title>shared_ptr类模版(2)</title>
+        <pubTime>2016-06-12T02:09:09.000Z</pubTime>
+        
+        <tag>shared_ptr</tag>
+         
+        <tag>C++</tag>
+         
+        <tag>boost</tag>
+         
+         
+           
+             
+              <breadCrumb title="Unix/Linux" url="http://deyituo.github.io/categories/Unix-Linux/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://deyituo.github.io/2016/06/09/shared-ptr%E7%B1%BB%E6%A8%A1%E7%89%88/</loc>
     <lastmod>2016-06-12T01:23:25.000Z</lastmod>
     <data>
